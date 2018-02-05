@@ -8,13 +8,16 @@ namespace KatasTDD.Kata2
         private Cart _cart;
         private CartItem _cartItem;
         private CartItem _cartItem2;
+        private CartItem _cartItem3;
 
         //Setup
         public MercadonaShoppingCartTests()
         {
-            _cart = new Cart();
+            this._cart = new Cart();
             _cartItem = new CartItem(2, "Test", 1.00m); 
-            _cartItem2 = new CartItem(3, "Test2", 2.00m);  
+            _cartItem2 = new CartItem(3, "Test2", 2.00m);
+            _cartItem3 = new CartItem(3, "Test3", 2.50m);
+            // total: 8
         }
 
         [Fact]
@@ -58,6 +61,52 @@ namespace KatasTDD.Kata2
             var actual = _cart.GetCartTotal();
 
             Assert.Equal(actual, 8);
+        }
+
+        [Fact]
+        public void CartHasTotalDiscountZeroByDefault()
+        {
+            _cart.AddItem(_cartItem); // 2
+            _cart.AddItem(_cartItem2); // 6
+
+            var total = _cart.GetCartTotal();
+            _cart.ApplyDiscount();
+
+
+            Assert.Equal(_cart.Total, 8);
+
+        }
+
+        [Fact]
+        public void CartHasTotalDiscount()
+        {
+            _cart.AddItem(_cartItem); // 2
+            _cart.AddItem(_cartItem2); // 6
+
+            var total = _cart.GetCartTotal();
+            _cart.AddDiscount(25.00m);
+            _cart.ApplyDiscount();
+
+
+            Assert.Equal(_cart.Total, 6);
+        }
+
+        [Fact]
+        public void ItemHasNameAndValueAsTostring()
+        {
+            var toStringResult = _cartItem3.ToString();
+
+            Assert.Equal("The item Test3 has a total value of 7.50", toStringResult);
+        }
+
+        [Fact]
+        public void ItemCanHavePercentageDiscount()
+        {
+            _cartItem.ApplyDiscount(100);
+            decimal totalAferDiscount = _cartItem.GetItemPrice();
+            
+            Assert.Equal(0,totalAferDiscount);
+
         }
 
         //Teardown
